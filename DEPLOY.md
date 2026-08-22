@@ -81,6 +81,7 @@ Giscus 是基于 GitHub Discussions 的免费评论系统，无需后端，无�
 1. 打开你的 GitHub 仓库页面
 2. 点击顶部 **Settings** 标签
 3. 左侧菜单找到 **Discussions**，点击确保开关是 **On**（绿色）
+4. https://github.com/apps/giscus安装
 
 ---
 
