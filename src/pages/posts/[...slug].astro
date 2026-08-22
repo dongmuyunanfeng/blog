@@ -48,8 +48,8 @@ const contentResult = await render(post);
 
       <div class="post-meta-row" style="display:flex;flex-wrap:wrap;align-items:center;gap:22px;color:var(--color-text-meta);font-size:14px;margin-bottom:24px;transition:color 0.3s;">
         <span class="meta-item" style="display:flex;align-items:center;gap:6px;"><span>🕒</span> {postMeta.date.toLocaleDateString('zh-CN')}</span>
-        <span class="meta-item" style="display:flex;align-items:center;gap:6px;"><span>👁</span><span id="vc-{post.id}">--</span></span>
-        <span class="meta-item" style="display:flex;align-items:center;gap:6px;"><span>💬</span><span id="cc-{post.id}">--</span></span>
+        <span class="meta-item" style="display:flex;align-items:center;gap:6px;" data-slug={post.id}><span>👁</span><span id={`vc-${post.id}`}>--</span></span>
+        <span class="meta-item" style="display:flex;align-items:center;gap:6px;"><span>💬</span><span id={`cc-${post.id}`}>--</span></span>
         {postMeta.categories?.length > 0 && (
           <span class="meta-item" style="display:flex;align-items:center;gap:6px;"><span>📂</span>
             {postMeta.categories.map(c => (
@@ -95,6 +95,8 @@ const contentResult = await render(post);
   </main>
 
   <script client:load>
+    const slugEl = document.querySelector('[data-slug]');
+    const POST_SLUG = slugEl ? slugEl.getAttribute('data-slug') : '';
     async function loadViewCount(slug) {
       const el = document.getElementById('vc-' + slug);
       if (!el) return;
@@ -107,7 +109,7 @@ const contentResult = await render(post);
         el.textContent = '--';
       }
     }
-    loadViewCount({slug});
+    loadViewCount(POST_SLUG);
   </script>
 
   <script client:load>
@@ -117,9 +119,9 @@ const contentResult = await render(post);
       try {
         const res = await fetch('https://api.github.com/repos/' + repo + '/discussions?per_page=100');
         const discussions = await res.json();
-        const el = document.getElementById('cc-{post.id}');
+        const el = document.getElementById('cc-' + POST_SLUG);
         if (el) {
-          const disc = discussions.find(d => d.title?.toLowerCase().includes('{post.id}'.toLowerCase()));
+          const disc = discussions.find(d => d.title?.toLowerCase().includes(POST_SLUG.toLowerCase()));
           el.textContent = disc ? disc.comments_count : 0;
         }
       } catch (e) {}

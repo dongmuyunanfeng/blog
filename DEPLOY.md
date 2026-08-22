@@ -72,30 +72,100 @@ site: 'https://your-domain.com',
 ## 3. 评论系统 (Giscus)
 
 Giscus 是基于 GitHub Discussions 的免费评论系统，无需后端，无需付费。
+文章详情页底部评论区 + 卡片上的评论数都会自动同步。
+
+---
 
 ### 3.1 开启 Discussions
-1. 进入仓库 **Settings** → **Discussions**，确保功能已启用
 
-### 3.2 创建 Giscus Discussion 类别
-1. 访问 https://giscus.app
-2. 选择你的仓库
-3. 创建一个新的 Discussion 类别（如 `Announcements` 或 `Blog Comments`）
-4. 记录以下信息：
-   - **Repository ID**：`MDEwOlJlcG9zaXRvcnk=...`
-   - **Category ID**：`MCAg...`
+1. 打开你的 GitHub 仓库页面
+2. 点击顶部 **Settings** 标签
+3. 左侧菜单找到 **Discussions**，点击确保开关是 **On**（绿色）
+
+---
+
+### 3.2 访问 https://giscus.app 配置
+
+1. 打开 https://giscus.app
+2. 点击 **Install Giscus**，选择你的 GitHub 账号授权
+3. 选择你的仓库（Repository）
+4. 进入配置页面，按以下步骤操作：
+
+#### ① 确认 Discussion 类别
+- 在 **Discussion category** 下拉框中选择一个类别
+- 如果没有类别，点击页面里的 **Create a new category**，填写：
+  - **Category name**：`Announcements`（或任意名称）
+  - **Description**：留空
+  - 点击 **Create Category**
+
+#### ② 获取 Repository ID 和 Category ID
+这两种方式任选其一：
+
+**方式一：giscus.app 页面直接看**
+- 配置页面顶部会显示你的 **Repository ID**（一串 base64 字符，如 `MDEwOlJlcG9zaXRvcnkzNjEyNTU0MDc=`）
+- 在 **Discussion category** 下拉框旁边的预览区会显示 **Category ID**（如 `MCAQl_...`）
+
+**方式二：用 GitHub API 查询（更精确）**
+在终端运行：
+```bash
+# 获取 Repository ID
+gh api repos/YOUR_USERNAME/your-repo-name --jq '.node_id'
+
+# 获取 Discussion 类别 ID
+gh api repos/YOUR_USERNAME/your-repo-name/discussion-categories --jq '.discussions_categories[0].node_id'
+```
+（需要先安装 GitHub CLI：https://cli.github.com）
+
+如果没装 `gh`，也可以手动查看：
+1. 打开 https://github.com/YOUR_USERNAME/your-repo-name/discussions/categories
+2. 点击任意类别，URL 里会包含类似 `discussion_categories/12345` 的数字，这就是 Category ID 的数值部分
+
+---
 
 ### 3.3 配置 GitHub Secrets
-进入仓库 **Settings** → **Secrets and variables** → **Actions**，添加以下 4 个 Secrets：
 
-| Secret 名称 | 值 |
-|---|---|
-| `GISCUS_REPO` | `你的用户名/仓库名`，如 `myname/blog` |
-| `GISCUS_REPO_ID` | 从 giscus.app 获取的仓库 ID |
-| `GISCUS_CATEGORY` | Discussion 类别名，如 `Announcements` |
-| `GISCUS_CATEGORY_ID` | 从 giscus.app 获取的类别 ID |
+1. 进入仓库 **Settings** → **Secrets and variables** → **Actions**
+2. 点击 **New repository secret**，依次添加以下 4 个：
 
-### 3.4 验证
-部署后访问任意文章页面，底部应出现评论区。
+| Secret 名称 | 值 | 示例 |
+|---|---|---|
+| `GISCUS_REPO` | 仓库名（用户/仓库） | `dongdong/blog` |
+| `GISCUS_REPO_ID` | 上面获取的 Repository ID | `MDEwOlJlcG9zaXRvcnkzNjEyNTU0MDc=` |
+| `GISCUS_CATEGORY` | Discussion 类别名 | `Announcements` |
+| `GISCUS_CATEGORY_ID` | 上面获取的 Category ID | `MCAQl_...` |
+
+---
+
+### 3.4 确保 Discussion 与文章匹配
+
+Giscus 通过文章的 URL 路径自动匹配 Discussion，格式是：`/posts/文章slug`
+
+你的文章默认 slug 是文件名（如 `hello-world`），Giscus 会匹配标题包含 `hello-world` 的 Discussion。
+
+**两种 Discussion 创建方式：**
+
+**方式一：自动创建（推荐）**
+- 不需要手动创建
+- 当用户第一次在文章评论区评论时，Giscus 会自动为该文章创建一条 Discussion
+- 之后该文章的所有评论都会出现在这条 Discussion 下
+
+**方式二：手动提前创建**
+1. 进入 https://github.com/YOUR_USERNAME/your-repo-name/discussions
+2. 点击 **New discussion**
+3. Category 选择你配置的类别（如 `Announcements`）
+4. Title 填写文章 slug（如 `hello-world`），或包含 slug 的标题
+5. 点击 **Start discussion**
+
+> 注意：Discussion 标题中必须包含文章的 slug，否则评论数无法匹配显示。
+
+---
+
+### 3.5 验证
+
+1. 推送代码到 main 分支，等待 GitHub Actions 部署完成
+2. 访问任意文章页面（如 `https://YOUR_USERNAME.github.io/your-repo-name/posts/hello-world/`）
+3. 页面底部应显示 **💬 评论区** 和 **发表评论** 按钮
+4. 首页文章卡片应显示真实评论数（评论数查询需要 Giscus 配置好）
 
 ---
 
