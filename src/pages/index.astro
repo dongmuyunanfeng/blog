@@ -62,63 +62,23 @@ const categories = Array.from(allCategories).sort();
     )}
   </div>
 
-  <script client:load>
-    let activeCategory = '';
-    const wrappers = document.querySelectorAll('.post-wrapper');
-
-    function filterPosts(category) {
-      wrappers.forEach(wrapper => {
-        const cats = wrapper.getAttribute('data-categories');
-        if (!category || !cats) {
-          wrapper.style.display = '';
-          return;
-        }
-        const match = cats.split(',').includes(category);
-        wrapper.style.display = match ? '' : 'none';
-      });
-
-      const visible = Array.from(wrappers).some(w => w.style.display !== 'none');
-      const emptyMsg = document.querySelector('.empty-message');
-      if (emptyMsg) emptyMsg.remove();
-      if (!visible && category) {
-        const msg = document.createElement('p');
-        msg.className = 'empty-message';
-        msg.style.cssText = 'text-align:center;color:var(--color-text-muted);padding:40px 0;';
-        msg.textContent = '该分类下暂无文章';
-        wrappers[0].after(msg);
+    <script client:load>
+    (function() {
+      const STORAGE_KEY = 'dongmu_blog_views';
+      function getViews() {
+        try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
       }
-    }
-
-    window.addEventListener('category-filter', (e) => {
-      activeCategory = e.detail;
-      filterPosts(activeCategory);
-    });
-
-    filterPosts('');
-  </script>
-
-  <script client:load>
-    async function loadViewCount(slug) {
-      const el = document.getElementById('vc-' + slug);
-      if (!el) return;
-      const cbName = 'vc_cb_' + slug + '_' + Math.floor(Math.random() * 1e5);
-      window[cbName] = (data) => { el.textContent = data.count || 0; delete window[cbName]; };
-      const s = document.createElement('script');
-      s.src = 'https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '?callback=' + cbName;
-      document.body.appendChild(s);
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.name = 'vc_if_' + Date.now();
-      document.body.appendChild(iframe);
-      const f = document.createElement('form');
-      f.method = 'POST';
-      f.action = 'https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '/inc';
-      f.target = iframe.name;
-      iframe.appendChild(f);
-      f.submit();
-      iframe.remove();
-    }
-    document.querySelectorAll('[id^="vc-"]').forEach(el => loadViewCount(el.id.slice(3)));
+      function incViews(slug) {
+        const views = getViews();
+        views[slug] = (views[slug] || 0) + 1;
+        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(views)); } catch {}
+        const el = document.getElementById('vc-' + slug);
+        if (el) el.textContent = views[slug];
+      }
+      document.querySelectorAll('[id^="vc-"]').forEach(function(el) {
+        incViews(el.id.slice(3));
+      });
+    })();
   </script>
 
   <script client:load>
