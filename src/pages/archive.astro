@@ -1,0 +1,78 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const sorted = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const grouped = new Map<string, typeof sorted>();
+sorted.forEach(post => {
+  const monthKey = `${post.data.date.getFullYear()}年${String(post.data.date.getMonth() + 1).padStart(2, '0')}月`;
+  if (!grouped.has(monthKey)) grouped.set(monthKey, []);
+  grouped.get(monthKey)!.push(post);
+});
+const sortedMonths = Array.from(grouped.keys()).sort((a, b) => b.localeCompare(a));
+---
+
+<BaseLayout title="归档 - 栋木遇楠枫" description="按时间归档的所有文章">
+  <div class="page-banner">
+    <a href="/" class="back-home">← 返回首页</a>
+    <h1 class="banner-title">📅 文章归档</h1>
+  </div>
+
+  <div style="padding: 0 15% 80px; max-width: 1400px; margin: 0 auto;">
+    {sortedMonths.map(month => (
+      <div style="margin-bottom: 40px;">
+        <h2 style="font-size: 22px; font-weight: 600; margin-bottom: 16px; color: var(--color-primary); padding-bottom: 8px; border-bottom: 2px solid var(--color-border);">
+          {month} ({grouped.get(month)?.length || 0}篇)
+        </h2>
+        {grouped.get(month)?.map(post => (
+          <PostCard
+            key={post.id}
+            title={post.data.title}
+            date={post.data.date.toLocaleDateString('zh-CN')}
+            categories={post.data.categories}
+            description={post.data.description}
+            slug={post.id}
+          />
+        ))}
+      </div>
+    ))}
+    {sorted.length === 0 && (
+      <p style="text-align:center;color:var(--color-text-muted);padding:40px 0;">暂无归档文章</p>
+    )}
+  </div>
+
+  <script client:load>
+    async function loadViewCount(slug) {
+      const el = document.getElementById('vc-' + slug);
+      if (!el) return;
+      try {
+        const resp = await fetch('https://countapi.xyz/hit/dongmu-blog/posts/' + slug);
+        const data = await resp.json();
+        el.textContent = data.count;
+        await fetch('https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '/inc', { method: 'POST' });
+      } catch (e) {
+        el.textContent = '--';
+      }
+    }
+    document.querySelectorAll('[id^="vc-"]').forEach(el => loadViewCount(el.id.slice(3)));
+  </script>
+
+  <script client:load>
+    (async () => {
+      const repo = import.meta.env.PUBLIC_GISCUS_REPO;
+      if (!repo) return;
+      try {
+        const res = await fetch('https://api.github.com/repos/' + repo + '/discussions?per_page=100');
+        const discussions = await res.json();
+        document.querySelectorAll('[id^="cc-"]').forEach(el => {
+          const slug = el.id.slice(3);
+          const disc = discussions.find(d => d.title?.toLowerCase().includes(slug.toLowerCase()));
+          el.textContent = disc ? disc.comments_count : 0;
+        });
+      } catch (e) {}
+    })();
+  </script>
+</BaseLayout>

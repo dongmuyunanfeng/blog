@@ -1,0 +1,34 @@
+---
+interface Props {
+  title: string;
+  slug: string;
+  count: number;
+}
+const { title, slug, count } = Astro.props;
+---
+
+<a href={`/categories/${slug}`} class="cat-nav-item">
+  {title}
+  <span class="cat-count">({count})</span>
+</a>
+<style>
+  .cat-nav-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 16px;
+    background: var(--color-bg-card);
+    color: var(--color-text);
+    border-radius: var(--color-radius-tag);
+    font-size: 14px;
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    transition: all 0.2s;
+  }
+  .cat-nav-item:hover {
+    background: var(--color-primary);
+    color: #fff;
+    border-color: var(--color-primary);
+  }
+  .cat-count { font-size: 12px; opacity: 0.7; }
+</style>

@@ -1,0 +1,30 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import CategoryItem from '@components/CategoryItem.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts', ({ data }) => !data.draft);
+const categories = new Map<string, number>();
+posts.forEach(p => {
+  (p.data.categories || []).forEach(c => categories.set(c, (categories.get(c) || 0) + 1));
+});
+---
+
+<BaseLayout title="分类列表 - 栋木遇楠枫" description="所有文章分类">
+  <div class="page-banner">
+    <a href="/" class="back-home">← 返回首页</a>
+    <h1 class="banner-title">📂 文章分类</h1>
+  </div>
+
+  <div style="padding: 0 15% 80px; max-width: 1400px; margin: 0 auto;">
+    {categories.size > 0 ? (
+      <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+        {Array.from(categories.entries()).map(([cat, count]) => (
+          <CategoryItem title={cat} slug={cat} count={count} />
+        ))}
+      </div>
+    ) : (
+      <p style="text-align:center;color:var(--color-text-muted);padding:40px 0;">暂无分类</p>
+    )}
+  </div>
+</BaseLayout>

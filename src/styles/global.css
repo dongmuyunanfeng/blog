@@ -1,0 +1,188 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --color-primary: #0066cc;
+  --color-primary-hover: #0052a3;
+  --color-bg: #ffffff;
+  --color-bg-secondary: #f5f9ff;
+  --color-bg-card: #ffffff;
+  --color-bg-code: #f2f4f7;
+  --color-text: #222222;
+  --color-text-secondary: #444444;
+  --color-text-muted: #777777;
+  --color-text-meta: #666666;
+  --color-text-deep: #2c3e60;
+  --color-border: #eef0f3;
+  --color-border-light: #f0f2f5;
+  --color-border-tag: #f0f6ff;
+  --color-shadow: rgba(0, 0, 0, 0.06);
+  --color-shadow-hover: rgba(0, 0, 0, 0.1);
+  --color-banner-bg: linear-gradient(135deg, #f5f9ff 0%, #e8f0fe 100%);
+  --color-tag-bg: #f0f6ff;
+  --color-tag-text: #0066cc;
+  --color-excerpt-bg: #f5f9ff;
+  --color-excerpt-border: #0066cc;
+  --color-code-block-bg: #1e1e1e;
+  --color-code-block-text: #dcdcdc;
+  --color-author-card-bg: #f8fafc;
+  --color-radius-card: 12px;
+  --color-radius-btn: 8px;
+  --color-radius-tag: 20px;
+  --color-radius-switch: 99px;
+  --font-main: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: Consolas, Monaco, 'Courier New', monospace;
+}
+
+[data-theme="dark"] {
+  --color-primary: #69b1ff;
+  --color-primary-hover: #91ccff;
+  --color-bg: #111111;
+  --color-bg-secondary: #1a1a1a;
+  --color-bg-card: #1e1e1e;
+  --color-bg-code: #334155;
+  --color-text: #eeeeee;
+  --color-text-secondary: #cccccc;
+  --color-text-muted: #aaaaaa;
+  --color-text-meta: #999999;
+  --color-text-deep: #f7fafc;
+  --color-border: #2d3748;
+  --color-border-light: #333333;
+  --color-border-tag: #1e3a5f;
+  --color-shadow: rgba(0, 0, 0, 0.3);
+  --color-shadow-hover: rgba(0, 0, 0, 0.4);
+  --color-banner-bg: linear-gradient(135deg, #1a1a1a 0%, #222222 100%);
+  --color-tag-bg: #1e3a5f;
+  --color-tag-text: #69b1ff;
+  --color-excerpt-bg: #1e293b;
+  --color-excerpt-border: #0066cc;
+  --color-code-block-bg: #1e1e1e;
+  --color-code-block-text: #d4d4d4;
+  --color-author-card-bg: #1e293b;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-main);
+  background: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.6;
+  transition: background 0.3s, color 0.3s;
+  overflow-x: hidden;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--color-primary-hover);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ========== 页面Banner通用 ========== */
+.page-banner {
+  padding: 60px 15% 40px;
+  background: var(--color-banner-bg);
+  margin-bottom: 40px;
+  transition: background 0.3s;
+}
+
+.back-home {
+  display: inline-block;
+  color: var(--color-primary);
+  text-decoration: none;
+  font-size: 15px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+
+.back-home:hover {
+  transform: translateX(-4px);
+  color: var(--color-primary-hover);
+}
+
+.banner-title {
+  font-size: 42px;
+  font-weight: 500;
+  color: var(--color-text);
+  margin: 0;
+  transition: color 0.3s;
+}
+
+/* ========== 点击特效（全局样式，非 scoped）========== */
+.click-ripple {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998 !important;
+  border: 2px solid var(--color-primary, #0066cc);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: rippleGrow 0.9s ease-out forwards;
+}
+@keyframes rippleGrow {
+  0%   { width: 0; height: 0; opacity: 0.9; }
+  100% { width: 180px; height: 180px; opacity: 0; }
+}
+
+.click-burst {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999 !important;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: burstFly 1s ease-out forwards;
+}
+@keyframes burstFly {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(0.1); }
+}
+
+.click-float-icon {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999 !important;
+  font-size: 20px;
+  transform: translate(-50%, -50%);
+  animation: iconFloat 1.2s ease-out forwards;
+}
+@keyframes iconFloat {
+  0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.6) rotate(0deg); }
+  50%  { opacity: 1; transform: translate(calc(-50% + var(--ox)), -90%) scale(1.2) rotate(var(--rotate)); }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--ox)), -160%) scale(0.5) rotate(calc(var(--rotate) * 2)); }
+}
+
+.click-pop-text {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10000 !important;
+  font-weight: 700;
+  font-size: 17px;
+  transform: translate(-50%, -50%);
+  animation: textPop 1s ease-out forwards;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  white-space: nowrap;
+}
+@keyframes textPop {
+  0%   { opacity: 0; transform: translate(-50%, -50%) scale(0.4); }
+  35%  { opacity: 1; transform: translate(-50%, -80%) scale(1.2); }
+  100% { opacity: 0; transform: translate(-50%, -140%) scale(1); }
+}

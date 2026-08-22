@@ -1,0 +1,56 @@
+---
+interface Props {
+  categories: string[];
+  activeCategory?: string;
+}
+const { categories = [], activeCategory = '' } = Astro.props;
+---
+
+<div class="category-nav" client:load>
+  <style>
+    .category-nav {
+      display: flex; flex-wrap: wrap; gap: 10px;
+      margin-bottom: 30px; padding: 0 15%;
+    }
+    .cat-tab {
+      padding: 8px 20px;
+      border-radius: var(--color-radius-tag);
+      font-size: 14px;
+      text-decoration: none;
+      border: 1px solid var(--color-border);
+      background: var(--color-bg-card);
+      color: var(--color-text);
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .cat-tab:hover, .cat-tab.active {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+    @media (max-width: 768px) {
+      .category-nav { padding: 0 5%; }
+    }
+  </style>
+
+  <button data-category="" class:list={['cat-tab', { active: activeCategory === '' }]}>全部</button>
+  {categories.map(cat => (
+    <button data-category={cat} class:list={['cat-tab', { active: activeCategory === cat }]}>
+      {cat}
+    </button>
+  ))}
+</div>
+
+<script client:load>
+  const buttons = document.querySelectorAll('[data-category]');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cat = btn.getAttribute('data-category');
+      // 更新激活状态
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // 触发首页过滤事件
+      window.dispatchEvent(new CustomEvent('category-filter', { detail: cat }));
+    });
+  });
+</script>

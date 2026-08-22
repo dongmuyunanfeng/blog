@@ -1,0 +1,132 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import HeroBanner from '@components/HeroBanner.astro';
+import CategoryNav from '@components/CategoryNav.astro';
+import PostCard from '@components/PostCard.astro';
+import Pagination from '@components/Pagination.astro';
+import { getCollection } from 'astro:content';
+
+const POSTS_PER_PAGE = 10;
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const sorted = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const totalPages = Math.ceil(sorted.length / POSTS_PER_PAGE);
+const page = Number(Astro.url.pathname.split('/page/')[1]) || 1;
+const start = (page - 1) * POSTS_PER_PAGE;
+const pagedPosts = sorted.slice(start, start + POSTS_PER_PAGE);
+
+const allCategories = new Set<string>();
+sorted.forEach(p => p.data.categories?.forEach(c => allCategories.add(c)));
+const categories = Array.from(allCategories).sort();
+---
+
+<BaseLayout title="栋木遇楠枫 - 首页" description="栋木遇楠枫的个人技术博客，专注网络安全、漏洞复现、工具开发">
+  <HeroBanner />
+
+  <div class="article-list-section">
+    <style>
+      .article-list-section {
+        background: var(--color-bg);
+        padding: 60px 15%;
+        min-height: 100vh;
+        transition: background 0.3s;
+      }
+      @media (max-width: 768px) {
+        .article-list-section { padding: 40px 5%; }
+      }
+    </style>
+
+    <CategoryNav categories={categories} />
+
+    {pagedPosts.map(post => {
+      const postCategories = (post.data.categories || []).join(',');
+      return (
+        <div class="post-wrapper" data-categories={postCategories}>
+          <PostCard
+            title={post.data.title}
+            date={post.data.date.toLocaleDateString('zh-CN')}
+            categories={post.data.categories}
+            description={post.data.description}
+            slug={post.id}
+            featured
+          />
+        </div>
+      );
+    })}
+
+    {sorted.length === 0 && (
+      <p style="text-align:center;color:var(--color-text-muted);padding:40px 0;">暂无发布的文章</p>
+    )}
+
+    {totalPages > 1 && (
+      <Pagination current={page} total={totalPages} baseUrl="/posts" />
+    )}
+  </div>
+
+  <script client:load>
+    let activeCategory = '';
+    const wrappers = document.querySelectorAll('.post-wrapper');
+
+    function filterPosts(category) {
+      wrappers.forEach(wrapper => {
+        const cats = wrapper.getAttribute('data-categories');
+        if (!category || !cats) {
+          wrapper.style.display = '';
+          return;
+        }
+        const match = cats.split(',').includes(category);
+        wrapper.style.display = match ? '' : 'none';
+      });
+
+      const visible = Array.from(wrappers).some(w => w.style.display !== 'none');
+      const emptyMsg = document.querySelector('.empty-message');
+      if (emptyMsg) emptyMsg.remove();
+      if (!visible && category) {
+        const msg = document.createElement('p');
+        msg.className = 'empty-message';
+        msg.style.cssText = 'text-align:center;color:var(--color-text-muted);padding:40px 0;';
+        msg.textContent = '该分类下暂无文章';
+        wrappers[0].after(msg);
+      }
+    }
+
+    window.addEventListener('category-filter', (e) => {
+      activeCategory = e.detail;
+      filterPosts(activeCategory);
+    });
+
+    filterPosts('');
+  </script>
+
+  <script client:load>
+    async function loadViewCount(slug) {
+      const el = document.getElementById('vc-' + slug);
+      if (!el) return;
+      try {
+        const resp = await fetch('https://countapi.xyz/hit/dongmu-blog/posts/' + slug);
+        const data = await resp.json();
+        el.textContent = data.count;
+        await fetch('https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '/inc', { method: 'POST' });
+      } catch (e) {
+        el.textContent = '--';
+      }
+    }
+    document.querySelectorAll('[id^="vc-"]').forEach(el => loadViewCount(el.id.slice(3)));
+  </script>
+
+  <script client:load>
+    (async () => {
+      const repo = import.meta.env.PUBLIC_GISCUS_REPO;
+      if (!repo) return;
+      try {
+        const res = await fetch('https://api.github.com/repos/' + repo + '/discussions?per_page=100');
+        const discussions = await res.json();
+        document.querySelectorAll('[id^="cc-"]').forEach(el => {
+          const slug = el.id.slice(3);
+          const postUrl = '/' + slug;
+          const disc = discussions.find(d => d.title?.toLowerCase().includes(slug.toLowerCase()));
+          el.textContent = disc ? disc.comments_count : 0;
+        });
+      } catch (e) {}
+    })();
+  </script>
+</BaseLayout>

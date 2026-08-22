@@ -1,0 +1,52 @@
+---
+interface Props {
+  current: number;
+  total: number;
+  baseUrl: string;
+}
+
+const { current, total, baseUrl } = Astro.props;
+const pages = [];
+const start = Math.max(1, current - 2);
+const end = Math.min(total, current + 2);
+for (let i = start; i <= end; i++) pages.push(i);
+---
+
+<nav class="pagination">
+  <style>
+    .pagination {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+    .pagination a, .pagination span {
+      padding: 8px 16px;
+      border: 1px solid var(--color-border);
+      border-radius: 6px;
+      text-decoration: none;
+      color: var(--color-text);
+      font-size: 15px;
+      transition: all 0.2s;
+      background: var(--color-bg-card);
+    }
+    .pagination a:hover, .pagination span.current {
+      background: var(--color-primary);
+      color: #fff;
+      border-color: var(--color-primary);
+    }
+  </style>
+
+  {current > 1 && (
+    <a href={current === 2 ? baseUrl : `${baseUrl}/page/${current - 1}`}>上一页</a>
+  )}
+  {pages.map(p =>
+    p === current
+      ? <span class="current">{p}</span>
+      : <a href={p === 1 ? baseUrl : `${baseUrl}/page/${p}`}>{p}</a>
+  )}
+  {current < total && (
+    <a href={`${baseUrl}/page/${current + 1}`}>下一页</a>
+  )}
+</nav>

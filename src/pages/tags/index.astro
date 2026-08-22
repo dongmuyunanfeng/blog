@@ -1,0 +1,55 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const posts = await getCollection('posts', ({ data }) => !data.draft);
+const tags = new Map<string, number>();
+posts.forEach(p => {
+  (p.data.tags || []).forEach(t => tags.set(t, (tags.get(t) || 0) + 1));
+});
+---
+
+<BaseLayout title="标签列表 - 栋木遇楠枫" description="所有文章标签">
+  <div class="page-banner">
+    <a href="/" class="back-home">← 返回首页</a>
+    <h1 class="banner-title">🏷️ 文章标签</h1>
+  </div>
+
+  <div style="padding: 0 15% 80px; max-width: 1400px; margin: 0 auto;">
+    {tags.size > 0 ? (
+      <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+        {Array.from(tags.entries()).map(([tag, count]) => (
+          <a href={`/tags/${tag}`} style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '4px',
+            padding: '8px 16px',
+            background: 'var(--color-bg-card)',
+            color: 'var(--color-text)',
+            borderRadius: '20px',
+            fontSize: '14px',
+            textDecoration: 'none',
+            border: '1px solid var(--color-border)',
+            transition: 'all 0.2s',
+          }}
+            onMouseEnter={e => {
+              (e.target as HTMLElement).style.background = 'var(--color-primary)';
+              (e.target as HTMLElement).style.color = '#fff';
+              (e.target as HTMLElement).style.borderColor = 'var(--color-primary)';
+            }}
+            onMouseLeave={e => {
+              (e.target as HTMLElement).style.background = 'var(--color-bg-card)';
+              (e.target as HTMLElement).style.color = 'var(--color-text)';
+              (e.target as HTMLElement).style.borderColor = 'var(--color-border)';
+            }}
+          >
+            {tag}
+            <span style={{ fontSize: '12px', opacity: 0.7 }}>({count})</span>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <p style="text-align:center;color:var(--color-text-muted);padding:40px 0;">暂无标签</p>
+    )}
+  </div>
+</BaseLayout>

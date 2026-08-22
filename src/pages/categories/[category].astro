@@ -1,0 +1,73 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import PostCard from '@components/PostCard.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths({ collections }) {
+  const posts = await getCollection('posts', ({ data }) => !data.draft);
+  const categories = new Set<string>();
+  posts.forEach(p => (p.data.categories || []).forEach(c => categories.add(c)));
+
+  return Array.from(categories).map(category => ({
+    params: { category },
+  }));
+}
+
+const { category } = Astro.params;
+const allPosts = await getCollection('posts', ({ data }) => !data.draft);
+const filtered = allPosts.filter(p => (p.data.categories || []).includes(category));
+const sorted = filtered.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title={`${category} - 文章列表 - 栋木遇楠枫`} description={`分类 ${category} 下的所有文章`}>
+  <div class="page-banner">
+    <a href="/categories" class="back-home">← 返回分类列表</a>
+    <h1 class="banner-title">📂 {category}</h1>
+  </div>
+
+  <div style="padding: 0 15% 80px; max-width: 1400px; margin: 0 auto;">
+    {sorted.length > 0 ? sorted.map(post => (
+      <PostCard
+        title={post.data.title}
+        date={post.data.date.toLocaleDateString('zh-CN')}
+        categories={post.data.categories}
+        description={post.data.description}
+        slug={post.id}
+      />
+    )) : (
+      <p style="text-align:center;color:var(--color-text-muted);padding:40px 0;">该分类暂无文章</p>
+    )}
+  </div>
+
+  <script client:load>
+    async function loadViewCount(slug) {
+      const el = document.getElementById('vc-' + slug);
+      if (!el) return;
+      try {
+        const resp = await fetch('https://countapi.xyz/hit/dongmu-blog/posts/' + slug);
+        const data = await resp.json();
+        el.textContent = data.count;
+        await fetch('https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '/inc', { method: 'POST' });
+      } catch (e) {
+        el.textContent = '--';
+      }
+    }
+    document.querySelectorAll('[id^="vc-"]').forEach(el => loadViewCount(el.id.slice(3)));
+  </script>
+
+  <script client:load>
+    (async () => {
+      const repo = import.meta.env.PUBLIC_GISCUS_REPO;
+      if (!repo) return;
+      try {
+        const res = await fetch('https://api.github.com/repos/' + repo + '/discussions?per_page=100');
+        const discussions = await res.json();
+        document.querySelectorAll('[id^="cc-"]').forEach(el => {
+          const slug = el.id.slice(3);
+          const disc = discussions.find(d => d.title?.toLowerCase().includes(slug.toLowerCase()));
+          el.textContent = disc ? disc.comments_count : 0;
+        });
+      } catch (e) {}
+    })();
+  </script>
+</BaseLayout>

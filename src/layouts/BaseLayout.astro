@@ -1,0 +1,40 @@
+---
+import '../styles/global.css';
+import ParticleBackground from '@components/ParticleBackground.astro';
+import ClickEffects from '@components/ClickEffects.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
+import SideMenu from '@components/SideMenu.astro';
+import Footer from '@components/Footer.astro';
+
+const { title = '栋木遇楠枫', description = '网络安全技术博客', url = Astro.site } = Astro.props;
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="theme-color" content="#0066cc" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title}</title>
+    <script>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.setAttribute('data-theme', 'dark');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <ParticleBackground />
+    <ClickEffects />
+    <SideMenu />
+    <ThemeToggle />
+    <main style="position: relative; z-index: 1;">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

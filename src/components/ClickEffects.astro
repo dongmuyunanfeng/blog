@@ -1,0 +1,104 @@
+---
+interface Props {
+  burstCount?: number;
+  floatIconCount?: number;
+  textPool?: string[];
+  iconPool?: string[];
+}
+
+const {
+  burstCount = 16,
+  floatIconCount = 6,
+  textPool = [
+    '✨ 学到了', '💻 技术流', '🔥 干货', '📌 收藏',
+    '🐂 太强了', '👍 绝了', '💡 涨知识', '🚀 起飞',
+    '❤️ 点赞', '🎯 精准', '💪 硬核', '🌟 mark'
+  ],
+  iconPool = ['❤️', '💜', '💙', '💚', '💛', '✨', '⭐', '💫', '🌸', '💖']
+} = Astro.props;
+---
+
+<div
+  id="click-effects-root"
+  client:load
+  data-burst-count={burstCount}
+  data-float-icon-count={floatIconCount}
+  data-text-pool={JSON.stringify(textPool)}
+  data-icon-pool={JSON.stringify(iconPool)}
+></div>
+
+<script client:load>
+(() => {
+  const root = document.getElementById('click-effects-root');
+  if (!root) return;
+
+  const burstCount = parseInt(root.dataset.burstCount, 10) || 16;
+  const floatIconCount = parseInt(root.dataset.floatIconCount, 10) || 6;
+  const textPool = JSON.parse(root.dataset.textPool || '[]');
+  const iconPool = JSON.parse(root.dataset.iconPool || '[]');
+
+  const COLORS = ['#ff4d4f', '#ff7a45', '#ffa940', '#0066cc', '#52c41a', '#722ed1', '#eb2f96', '#13c2c2'];
+
+  document.addEventListener('click', function(e) {
+    const x = e.clientX;
+    const y = e.clientY;
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+    // 特效1：波纹
+    const ripple = document.createElement('div');
+    ripple.className = 'click-ripple';
+    ripple.style.left = x + 'px';
+    ripple.style.top = y + 'px';
+    ripple.style.borderColor = isDark ? '#69b1ff' : '#0066cc';
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 900);
+
+    // 特效2：粒子爆炸
+    for (let i = 0; i < burstCount; i++) {
+      const dot = document.createElement('div');
+      dot.className = 'click-burst';
+      const size = Math.random() * 7 + 4;
+      dot.style.width = size + 'px';
+      dot.style.height = size + 'px';
+      dot.style.left = x + 'px';
+      dot.style.top = y + 'px';
+      dot.style.background = COLORS[Math.floor(Math.random() * COLORS.length)];
+
+      const angle = Math.random() * Math.PI * 2;
+      const distance = Math.random() * 90 + 30;
+      dot.style.setProperty('--tx', Math.cos(angle) * distance + 'px');
+      dot.style.setProperty('--ty', Math.sin(angle) * distance + 'px');
+
+      document.body.appendChild(dot);
+      setTimeout(() => dot.remove(), 1000);
+    }
+
+    // 特效3：符号飘散
+    for (let i = 0; i < floatIconCount; i++) {
+      const icon = document.createElement('div');
+      icon.className = 'click-float-icon';
+      icon.innerText = iconPool[Math.floor(Math.random() * iconPool.length)];
+      icon.style.left = x + 'px';
+      icon.style.top = y + 'px';
+      icon.style.setProperty('--ox', (Math.random() - 0.5) * 100 + 'px');
+      icon.style.setProperty('--rotate', (Math.random() - 0.5) * 60 + 'deg');
+      icon.style.animationDuration = 0.9 + Math.random() * 0.5 + 's';
+
+      document.body.appendChild(icon);
+      setTimeout(() => icon.remove(), 1200);
+    }
+
+    // 特效4：文字弹出
+    const text = textPool[Math.floor(Math.random() * textPool.length)];
+    const textEl = document.createElement('div');
+    textEl.className = 'click-pop-text';
+    textEl.innerText = text;
+    textEl.style.left = x + 'px';
+    textEl.style.top = y + 'px';
+    textEl.style.color = COLORS[Math.floor(Math.random() * COLORS.length)];
+
+    document.body.appendChild(textEl);
+    setTimeout(() => textEl.remove(), 1000);
+  });
+})();
+</script>

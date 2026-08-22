@@ -1,0 +1,37 @@
+---
+interface Props {
+  posts: Array<{ title: string; slug: string; date: string }>;
+}
+const { posts } = Astro.props;
+---
+
+<div class="related-posts">
+  <style>
+    .related-posts h2 {
+      font-size: 20px; font-weight: 600; margin-bottom: 16px;
+      color: var(--color-text); padding-bottom: 10px;
+      border-bottom: 2px solid var(--color-primary);
+      display: inline-block; transition: color 0.3s;
+    }
+    .related-item {
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--color-border-light);
+      padding: 14px 0; transition: all 0.2s;
+    }
+    .related-item:last-child { border-bottom: none; }
+    .related-item:hover { padding-left: 8px; border-bottom-color: var(--color-primary); }
+    .related-item a {
+      text-decoration: none; color: var(--color-text);
+      font-size: 16px; font-weight: 500; transition: color 0.2s; flex: 1;
+    }
+    .related-item a:hover { color: var(--color-primary) !important; }
+    .related-item time { color: var(--color-text-muted); font-size: 13px; margin-left: 16px; flex-shrink: 0; }
+  </style>
+  <h2>📖 推荐阅读</h2>
+  {posts.map(p => (
+    <div class="related-item">
+      <a href={`/posts/${p.slug}`}>{p.title}</a>
+      <time>{p.date}</time>
+    </div>
+  ))}
+</div>

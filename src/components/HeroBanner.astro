@@ -1,0 +1,62 @@
+---
+---
+
+<div class="hero-banner">
+  <style>
+    .hero-banner {
+      width: 100%; height: 100vh;
+      position: relative; overflow: hidden;
+    }
+    .banner-video {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      position: absolute; top: 0; left: 0; z-index: -1;
+    }
+    .center-box {
+      width: 100%; height: 100%;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center; gap: 42px;
+      position: relative; z-index: 2;
+    }
+    .site-name {
+      font-size: 82px; font-weight: 500; margin: 0;
+      color: #2c3e60; letter-spacing: 4px;
+      transition: color 0.3s;
+    }
+    [data-theme="dark"] .site-name { color: #ffffff; }
+    .poem-text {
+      font-size: 50px; margin: 0; color: #ffffff;
+      letter-spacing: 2px; transform: translateX(25px);
+      text-shadow: 0 1px 3px #000, 0 2px 6px rgba(0,0,0,0.45), 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .avatar-box {
+      position: fixed; right: 0; top: 20%;
+      transform: translateY(-50%);
+      width: 75px; height: 75px;
+      border-radius: 50%; overflow: hidden;
+      margin-right: 12px; z-index: 999;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+    .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
+
+    @media (max-width: 768px) {
+      .site-name { font-size: 42px; }
+      .poem-text { font-size: 24px; transform: translateX(0); }
+      .avatar-box { width: 50px; height: 50px; }
+    }
+  </style>
+
+  <video class="banner-video" autoplay muted loop playsinline>
+    <source src="/assets/videos/banner.mp4" type="video/mp4">
+  </video>
+
+  <div class="center-box">
+    <h1 class="site-name">栋木遇楠枫</h1>
+    <p class="poem-text">落叶不知秋已去，飘零即是归途。</p>
+  </div>
+
+  <div class="avatar-box">
+    <img src="/assets/images/avatar.jpg" alt="头像" onerror="this.style.display='none'">
+  </div>
+</div>

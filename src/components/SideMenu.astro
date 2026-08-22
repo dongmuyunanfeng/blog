@@ -1,0 +1,187 @@
+---
+---
+
+<style>
+  @keyframes menuOpen {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(90deg); }
+  }
+  @keyframes menuClose {
+    0%   { transform: rotate(90deg); }
+    100% { transform: rotate(0deg); }
+  }
+  @keyframes slideIn {
+    0%   { opacity: 0; transform: translateX(-10px); }
+    100% { opacity: 1; transform: translateX(0); }
+  }
+
+  .menu-mask {
+    position: fixed; top: 0; left: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(0, 0, 0, 0.4);
+    display: none; z-index: 9998;
+    transition: background 0.3s;
+  }
+  .menu-mask.active { display: block; }
+
+  .side-menu {
+    position: fixed; left: -300px; top: 0;
+    width: 300px; height: 100vh;
+    background: linear-gradient(135deg, rgba(10,15,30,0.95) 0%, rgba(20,30,50,0.95) 100%);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(0, 102, 204, 0.3);
+    transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 60px 24px 24px;
+    z-index: 9999;
+    overflow-y: auto;
+    box-shadow: 4px 0 30px rgba(0, 102, 204, 0.15);
+  }
+  .side-menu.open { left: 0; }
+
+  .side-menu p {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin: 0 0 20px 4px;
+  }
+  .side-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 16px;
+    font-weight: 500;
+    margin: 4px 0;
+    text-decoration: none;
+    padding: 12px 16px;
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+  }
+  .side-menu a::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0;
+    width: 3px;
+    height: 100%;
+    background: var(--color-primary, #0066cc);
+    border-radius: 0 2px 2px 0;
+    transform: scaleY(0);
+    transition: transform 0.2s ease;
+  }
+  .side-menu a:hover {
+    background: rgba(0, 102, 204, 0.15);
+    color: #fff;
+    padding-left: 20px;
+  }
+  .side-menu a:hover::before {
+    transform: scaleY(1);
+  }
+  .side-menu.open a {
+    animation: slideIn 0.3s ease forwards;
+    opacity: 0;
+  }
+  .side-menu.open a:nth-child(2) { animation-delay: 0.05s; }
+  .side-menu.open a:nth-child(3) { animation-delay: 0.1s; }
+  .side-menu.open a:nth-child(4) { animation-delay: 0.15s; }
+  .side-menu.open a:nth-child(5) { animation-delay: 0.2s; }
+  .side-menu.open a:nth-child(6) { animation-delay: 0.25s; }
+  .side-menu.open a:nth-child(7) { animation-delay: 0.3s; }
+
+  /* Hamburger button */
+  .top-menu {
+    position: fixed;
+    top: 24px;
+    left: 24px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 12px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    cursor: pointer;
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    padding: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.4);
+  }
+  .top-menu:hover {
+    background: rgba(0, 0, 0, 0.75);
+    transform: scale(1.05);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    border-color: rgba(255, 255, 255, 0.4);
+  }
+  .top-menu span {
+    display: block;
+    width: 20px;
+    height: 2.5px;
+    background: #ffffff;
+    border-radius: 2px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+    box-shadow: 0 0 6px rgba(255, 255, 255, 0.3);
+  }
+  .top-menu:hover span { width: 22px; }
+  .top-menu span:nth-child(1) { transform: translateY(-3.5px); }
+  .top-menu span:nth-child(3) { transform: translateY(3.5px); }
+
+  /* X state when menu is open — use JS class on button instead */
+  .top-menu.x span:nth-child(1) { transform: translateY(0) rotate(45deg); }
+  .top-menu.x span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .top-menu.x span:nth-child(3) { transform: translateY(0) rotate(-45deg); }
+</style>
+
+<div id="menuContainer">
+  <button id="menuBtn" class="top-menu" aria-label="打开菜单">
+    <span></span>
+    <span></span>
+    <span></span>
+  </button>
+  <div id="menuMask" class="menu-mask"></div>
+  <div id="sideMenu" class="side-menu">
+    <p>导航</p>
+    <a href="/">🏠 首页</a>
+    <a href="/posts">📄 文章列表</a>
+    <a href="/categories">📂 分类</a>
+    <a href="/tags">🏷️ 标签</a>
+    <a href="/archive">📅 归档</a>
+    <a href="/about">👤 关于我</a>
+  </div>
+</div>
+
+<script client:load>
+  (() => {
+    const menuBtn = document.getElementById('menuBtn');
+    const sideMenu = document.getElementById('sideMenu');
+    const mask = document.getElementById('menuMask');
+
+    function openMenu() {
+      sideMenu?.classList.add('open');
+      mask?.classList.add('active');
+    }
+    function closeMenu() {
+      sideMenu?.classList.remove('open');
+      mask?.classList.remove('active');
+      menuBtn?.classList.remove('x');
+    }
+
+    menuBtn?.addEventListener('click', () => {
+      const isOpen = sideMenu?.classList.toggle('open');
+      mask?.classList.toggle('active', isOpen);
+      menuBtn?.classList.toggle('x', isOpen);
+    });
+    mask?.addEventListener('click', closeMenu);
+    sideMenu?.querySelectorAll('a').forEach(link => link.addEventListener('click', closeMenu));
+  })();
+</script>

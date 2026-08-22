@@ -1,0 +1,75 @@
+---
+interface Props {
+  repo: string;
+  repoId: string;
+  category: string;
+  categorySlug: string;
+}
+const { repo, repoId, category, categorySlug } = Astro.props;
+const isGiscusConfigured = repo && repoId && categorySlug;
+---
+
+<div class="giscus-container" id="comment-area" client:load>
+  <style>
+    .giscus-container { margin-top: 40px; margin-bottom: 40px; }
+    .giscus-container h2 {
+      font-size: 22px; margin-bottom: 20px; font-weight: 600;
+      color: var(--color-text); padding-bottom: 10px;
+      border-bottom: 2px solid var(--color-primary);
+      display: inline-block; transition: color 0.3s, border-color 0.3s;
+    }
+    .giscus-placeholder {
+      padding: 40px; text-align: center;
+      color: var(--color-text-muted); background: var(--color-bg-card);
+      border-radius: var(--color-radius-card); border: 1px solid var(--color-border);
+    }
+  </style>
+  <h2>💬 评论区</h2>
+  {isGiscusConfigured
+    ? <giscus-widget
+        repo={repo} repo-id={repoId} category={category} category-id={categorySlug}
+        mapping="pathname" strict="1" reactions-enabled="1" emission-enabled="1"
+        theme="light" loading="lazy"
+      ></giscus-widget>
+    : <div class="giscus-placeholder">
+        <p>评论区暂未配置，请先在 <a href="https://giscus.app">giscus.app</a> 创建 Discussion 类别。</p>
+      </div>
+  }
+</div>
+
+<style>
+  giscus-widget { width: 100%; min-height: 400px; display: block; }
+</style>
+
+<script client:load>
+  import { GiscusWidget } from 'giscus';
+  if (!customElements.get('giscus-widget')) {
+    customElements.define('giscus-widget', GiscusWidget);
+  }
+
+  const STORAGE_KEY = 'theme';
+  function getGiscusTheme() {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (stored === 'dark' || stored === 'light') return stored;
+    return document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+  }
+
+  function updateGiscusTheme() {
+    const iframe = document.querySelector('iframe.giscus-frame');
+    if (iframe && iframe.contentWindow) {
+      iframe.contentWindow.postMessage(
+        { giscus: { setConfig: { theme: getGiscusTheme() } } },
+        'https://giscus.app'
+      );
+    }
+  }
+
+  setTimeout(updateGiscusTheme, 1000);
+  new MutationObserver(() => updateGiscusTheme()).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['data-theme']
+  });
+  window.addEventListener('storage', (e) => {
+    if (e.key === STORAGE_KEY) updateGiscusTheme();
+  });
+</script>

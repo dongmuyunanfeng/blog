@@ -1,0 +1,52 @@
+---
+interface Props {
+  title: string;
+  date: string;
+  categories?: string[];
+  description?: string;
+  slug: string;
+  featured?: boolean;
+}
+const { title, date, categories = [], description = '', slug, featured = false } = Astro.props;
+---
+
+<article class:list={['article-item', { featured }]}>
+  <style>
+    .article-item {
+      background: var(--color-bg-card);
+      border-radius: var(--color-radius-card);
+      padding: 28px 32px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 12px var(--color-shadow);
+      transition: all 0.3s;
+    }
+    .article-item:hover {
+      box-shadow: 0 4px 20px var(--color-shadow-hover);
+      transform: translateY(-2px);
+    }
+    .article-title { font-size: 22px; margin: 0 0 12px 0; line-height: 1.4; }
+    .article-item.featured .article-title { font-size: 32px; }
+    .article-title a { color: var(--color-text); text-decoration: none; transition: color 0.2s; }
+    .article-title a:hover { color: var(--color-primary); }
+    .article-meta {
+      display: flex; gap: 20px; font-size: 14px; color: var(--color-text-meta);
+      margin-bottom: 12px; flex-wrap: wrap; transition: color 0.3s;
+    }
+    .meta-item { display: flex; align-items: center; gap: 6px; }
+    .article-desc { color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 14px; font-size: 15px; }
+    .read-more { color: var(--color-primary); font-size: 14px; text-decoration: none; padding-bottom: 2px; border-bottom: 1px solid var(--color-primary); transition: all 0.2s; }
+    .read-more:hover { border-bottom-color: transparent; }
+  </style>
+
+  <h2 class:featured={featured}>
+    <a href={`/posts/${slug}`}>{title}</a>
+  </h2>
+  <div class="article-meta">
+    <span class="meta-item"><span>🕒</span>{date}</span>
+    <span class="meta-item"><span>👁</span><span id="vc-{slug}">--</span></span>
+    <span class="meta-item"><span>💬</span><span id="cc-{slug}">--</span></span>
+    {categories.length > 0 && <span class="meta-item"><span>📂</span>{categories.join(' / ')}</span>}
+  </div>
+  {description && <div class="article-desc">{description.length > 120 ? description.slice(0, 120) + '...' : description}</div>}
+  <a href={`/posts/${slug}`} class="read-more">阅读全文 »</a>
+</article>

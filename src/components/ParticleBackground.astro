@@ -1,0 +1,149 @@
+---
+---
+
+<canvas id="particle-canvas" client:load></canvas>
+
+<script client:load>
+(() => {
+  const canvas = document.getElementById('particle-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  let trailPoints = [];
+  let mouse = { x: -9999, y: -9999, active: false };
+
+  const CONFIG = {
+    particleCount: 70,
+    particleSpeed: 0.45,
+    gravityRadius: 110,
+    gravityStrength: 0.018,
+    lineMaxDist: 130,
+    trailLength: 18,
+    trailMaxSize: 2.8,
+  };
+
+  function resize() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  window.addEventListener('mousemove', e => {
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+    mouse.active = true;
+    trailPoints.push({ x: e.clientX, y: e.clientY });
+    if (trailPoints.length > CONFIG.trailLength) trailPoints.shift();
+  });
+  window.addEventListener('mouseleave', () => {
+    mouse.active = false;
+    trailPoints = [];
+  });
+
+  function initParticles() {
+    particles = [];
+    for (let i = 0; i < CONFIG.particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * CONFIG.particleSpeed,
+        vy: (Math.random() - 0.5) * CONFIG.particleSpeed,
+        r: Math.random() * 1.8 + 0.8,
+      });
+    }
+  }
+  initParticles();
+
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const dotColor = isDark ? 'rgba(105, 177, 255, 0.7)' : 'rgba(0, 102, 204, 0.55)';
+    const lineRGB = isDark ? '105, 177, 255' : '0, 102, 204';
+
+    // Mouse trail
+    if (trailPoints.length > 1) {
+      for (let i = 0; i < trailPoints.length; i++) {
+        const p = trailPoints[i];
+        const progress = i / trailPoints.length;
+        const size = progress * CONFIG.trailMaxSize;
+        const alpha = progress * 0.65;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+        ctx.fillStyle = isDark ? `rgba(105, 177, 255, ${alpha})` : `rgba(0, 102, 204, ${alpha})`;
+        ctx.fill();
+      }
+    }
+
+    particles.forEach((p, i) => {
+      if (mouse.active) {
+        const dx = mouse.x - p.x;
+        const dy = mouse.y - p.y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < CONFIG.gravityRadius && dist > 0) {
+          const force = (CONFIG.gravityRadius - dist) / CONFIG.gravityRadius * CONFIG.gravityStrength;
+          p.vx += dx / dist * force;
+          p.vy += dy / dist * force;
+        }
+      }
+      p.vx *= 0.996;
+      p.vy *= 0.996;
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+      if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = dotColor;
+      ctx.fill();
+
+      for (let j = i + 1; j < particles.length; j++) {
+        const p2 = particles[j];
+        const ddx = p.x - p2.x;
+        const ddy = p.y - p2.y;
+        const dist = Math.sqrt(ddx * ddx + ddy * ddy);
+        if (dist < CONFIG.lineMaxDist) {
+          const alpha = (1 - dist / CONFIG.lineMaxDist) * 0.2;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = `rgba(${lineRGB}, ${alpha})`;
+          ctx.lineWidth = 0.5;
+          ctx.stroke();
+        }
+      }
+
+      if (mouse.active) {
+        const mdx = p.x - mouse.x;
+        const mdy = p.y - mouse.y;
+        const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
+        if (mdist < CONFIG.gravityRadius) {
+          const alpha = (1 - mdist / CONFIG.gravityRadius) * 0.55;
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = `rgba(${lineRGB}, ${alpha})`;
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    });
+
+    requestAnimationFrame(animate);
+  }
+  animate();
+})();
+</script>
+
+<style>
+  #particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+</style>
