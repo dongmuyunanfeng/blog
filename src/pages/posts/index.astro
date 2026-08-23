@@ -51,35 +51,19 @@ const pagedPosts = sorted.slice(start, start + POSTS_PER_PAGE);
   </div>
 
   <script client:load>
-    (function() {
-      window._vcCbs = window._vcCbs || {};
-      function loadViewCount(slug) {
-        var el = document.getElementById('vc-' + slug);
-        if (!el) return;
-        var cbName = 'vc_cb_' + slug + '_' + Math.floor(Math.random() * 1e5);
-        window._vcCbs[cbName] = function(data) {
-          el.textContent = data.count || 0;
-          delete window._vcCbs[cbName];
-        };
-        var s = document.createElement('script');
-        s.src = 'https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '?callback=' + cbName;
-        document.body.appendChild(s);
-        var iframe = document.createElement('iframe');
-        iframe.style.display = 'none';
-        iframe.name = 'vc_if_' + Date.now();
-        document.body.appendChild(iframe);
-        var f = document.createElement('form');
-        f.method = 'POST';
-        f.action = 'https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '/inc';
-        f.target = iframe.name;
-        iframe.appendChild(f);
-        f.submit();
-        iframe.remove();
+    async function loadViewCount(slug) {
+      const el = document.getElementById('vc-' + slug);
+      if (!el) return;
+      try {
+        const resp = await fetch('https://countapi.xyz/hit/dongmu-blog/posts/' + slug);
+        const data = await resp.json();
+        el.textContent = data.count;
+        await fetch('https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '/inc', { method: 'POST' });
+      } catch (e) {
+        el.textContent = '--';
       }
-      document.querySelectorAll('[id^="vc-"]').forEach(function(el) {
-        loadViewCount(el.id.slice(3));
-      });
-    })();
+    }
+    document.querySelectorAll('[id^="vc-"]').forEach(el => loadViewCount(el.id.slice(3)));
   </script>
 
   <script client:load>

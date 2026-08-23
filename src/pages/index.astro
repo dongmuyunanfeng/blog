@@ -101,22 +101,14 @@ const categories = Array.from(allCategories).sort();
     async function loadViewCount(slug) {
       const el = document.getElementById('vc-' + slug);
       if (!el) return;
-      const cbName = 'vc_cb_' + slug + '_' + Math.floor(Math.random() * 1e5);
-      window[cbName] = (data) => { el.textContent = data.count || 0; delete window[cbName]; };
-      const s = document.createElement('script');
-      s.src = 'https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '?callback=' + cbName;
-      document.body.appendChild(s);
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.name = 'vc_if_' + Date.now();
-      document.body.appendChild(iframe);
-      const f = document.createElement('form');
-      f.method = 'POST';
-      f.action = 'https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '/inc';
-      f.target = iframe.name;
-      iframe.appendChild(f);
-      f.submit();
-      iframe.remove();
+      try {
+        const resp = await fetch('https://countapi.xyz/hit/dongmu-blog/posts/' + slug);
+        const data = await resp.json();
+        el.textContent = data.count;
+        await fetch('https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '/inc', { method: 'POST' });
+      } catch (e) {
+        el.textContent = '--';
+      }
     }
     document.querySelectorAll('[id^="vc-"]').forEach(el => loadViewCount(el.id.slice(3)));
   </script>
