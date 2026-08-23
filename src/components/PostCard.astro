@@ -8,17 +8,6 @@ interface Props {
   featured?: boolean;
 }
 const { title, date, categories = [], description = '', slug, featured = false } = Astro.props;
-const STORAGE_KEY = 'dongmu_blog_views';
-function getViews() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? JSON.parse(raw) : {};
-  } catch { return {}; }
-}
-function setViews(v) {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(v)); } catch {}
-}
-const views = getViews()[slug] || 0;
 ---
 
 <article class:list={['article-item', { featured }]}>
@@ -54,8 +43,8 @@ const views = getViews()[slug] || 0;
   </h2>
   <div class="article-meta">
     <span class="meta-item"><span>🕒</span>{date}</span>
-    <span class="meta-item"><span>👁</span><span id="vc-{slug}" data-views={views}>--</span></span>
-    <span class="meta-item"><span>💬</span><span id="cc-{slug}">--</span></span>
+    <span class="meta-item"><span>👁</span><span id={`vc-${slug}`}>--</span></span>
+    <span class="meta-item"><span>💬</span><span id={`cc-${slug}`}>--</span></span>
     {categories.length > 0 && <span class="meta-item"><span>📂</span>{categories.join(' / ')}</span>}
   </div>
   {description && <div class="article-desc">{description.length > 120 ? description.slice(0, 120) + '...' : description}</div>}
