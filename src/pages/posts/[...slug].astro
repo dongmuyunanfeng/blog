@@ -94,38 +94,41 @@ const contentResult = await render(post);
     )}
   </main>
 
-    <script client:load>
-    (function() {
-      const STORAGE_KEY = 'dongmu_blog_views';
-      function getViews() {
-        try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch { return {}; }
-      }
-      function incViews(slug) {
-        const views = getViews();
-        views[slug] = (views[slug] || 0) + 1;
-        try { localStorage.setItem(STORAGE_KEY, JSON.stringify(views)); } catch {}
-        const el = document.getElementById('vc-' + slug);
-        if (el) el.textContent = views[slug];
-      }
-      document.querySelectorAll('[id^="vc-"]').forEach(function(el) {
-        incViews(el.id.slice(3));
-      });
-    })();
+  <script client:load>
+    const POST_SLUG = document.querySelector('[data-slug]')?.getAttribute('data-slug') || '';
+    async function loadViewCount(slug) {
+      const el = document.getElementById('vc-' + slug);
+      if (!el) return;
+      const cbName = 'vc_cb_' + slug + '_' + Math.floor(Math.random() * 1e5);
+      window[cbName] = (data) => { el.textContent = data.count || 0; delete window[cbName]; };
+      const s = document.createElement('script');
+      s.src = 'https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '?callback=' + cbName;
+      document.body.appendChild(s);
+      const iframe = document.createElement('iframe');
+      iframe.style.display = 'none';
+      iframe.name = 'vc_if_' + Date.now();
+      document.body.appendChild(iframe);
+      const f = document.createElement('form');
+      f.method = 'POST';
+      f.action = 'https://countapi.xyz/hit/dongmu-blog/posts/' + slug + '/inc';
+      f.target = iframe.name;
+      iframe.appendChild(f);
+      f.submit();
+      iframe.remove();
+    }
+    loadViewCount(POST_SLUG);
   </script>
 
   <script client:load>
     (async () => {
-      const slugEl = document.querySelector('[data-slug]');
-      const slug = slugEl ? slugEl.getAttribute('data-slug') : '';
-      if (!slug) return;
       const repo = import.meta.env.PUBLIC_GISCUS_REPO;
       if (!repo) return;
       try {
         const res = await fetch('https://api.github.com/repos/' + repo + '/discussions?per_page=100');
         const discussions = await res.json();
-        const el = document.getElementById('cc-' + slug);
+        const el = document.getElementById('cc-' + POST_SLUG);
         if (el) {
-          const disc = discussions.find(d => d.title?.toLowerCase().includes(slug.toLowerCase()));
+          const disc = discussions.find(d => d.title?.toLowerCase().includes(POST_SLUG.toLowerCase()));
           el.textContent = disc ? disc.comments_count : 0;
         }
       } catch (e) {}
