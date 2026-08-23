@@ -54,8 +54,8 @@ const views = getViews()[slug] || 0;
   </h2>
   <div class="article-meta">
     <span class="meta-item"><span>🕒</span>{date}</span>
-    <span class="meta-item"><span>👁</span><span id={`vc-${slug}`} data-views={views}>--</span></span>
-    <span class="meta-item"><span>💬</span><span id={`cc-${slug}`}>--</span></span>
+    <span class="meta-item"><span>👁</span><span id="vc-{slug}" data-views={views}>--</span></span>
+    <span class="meta-item"><span>💬</span><span id="cc-{slug}">--</span></span>
     {categories.length > 0 && <span class="meta-item"><span>📂</span>{categories.join(' / ')}</span>}
   </div>
   {description && <div class="article-desc">{description.length > 120 ? description.slice(0, 120) + '...' : description}</div>}
