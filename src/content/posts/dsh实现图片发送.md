@@ -4,7 +4,7 @@ date: 2026-08-31
 description: "在deepseek harness中实现让大语言模型理解图片"
 categories: ["dsh"]
 tags: ["工具", "插件", "图片"]
-draft: true
+draft: false
 ---
 
 # 安装 dsh-vision-router 插件（让图片可以发送）— 完整正确步骤
