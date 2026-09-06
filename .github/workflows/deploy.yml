@@ -2,9 +2,9 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches: [master,dev]
   pull_request:
-    branches: [master]
+    branches: [master,dev]
 
 permissions:
   contents: read
@@ -46,6 +46,7 @@ jobs:
           path: dist
 
   deploy:
+    if: github.ref == 'refs/heads/master'
     needs: build
     runs-on: ubuntu-latest
     environment:
