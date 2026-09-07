@@ -9,7 +9,7 @@ draft: true
 
 # C罗桌宠（dsh-ronaldo-pet）安装与维护手册
 
-<img src="C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260903150615110.png" alt="image-20260903150615110" style="zoom: 33%;" />
+<img src="/assets/images/image-20260903150615110.png" alt="image-20260903150615110" style="zoom: 33%;" />
 
 > 这份手册面向**你自己动手操作**：怎么装、怎么改、怎么验证、出问题怎么查。
 > 所有路径、命令、文件都是**本机实际生效**的，照抄即可。

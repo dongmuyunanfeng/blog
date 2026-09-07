@@ -12,17 +12,17 @@ draft: true
 
 https://music.apple.com/cn/search
 
-![微信图片_20260817180151_1498_90](C:\Users\DongDong\Desktop\临时文件\LocaleMetaData\微信图片_20260817180151_1498_90.png)
+![微信图片_20260817180151_1498_90](/assets/images/微信图片_20260817180151_1498_90.png)
 
 - 访问下一个网址
 
 https://aplmate.com/
 
-![image-20260817180747744](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260817180747744.png)
+![image-20260817180747744](/assets/images/image-20260817180747744.png)
 
-![image-20260817180820414](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260817180820414.png)
+![image-20260817180820414](/assets/images/image-20260817180820414.png)
 
-![image-20260817180915694](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260817180915694.png)
+![image-20260817180915694](/assets/images/image-20260817180915694.png)
 
 ### 桌面版播放器使用指南
 
@@ -30,15 +30,15 @@ https://aplmate.com/
 
 github地址
 
-![image-20260817181106115](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260817181106115.png)
+![image-20260817181106115](/assets/images/image-20260817181106115.png)
 
-![image-20260817181218562](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260817181218562.png)
+![image-20260817181218562](/assets/images/image-20260817181218562.png)
 
-![image-20260817181444666](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260817181444666.png)
+![image-20260817181444666](/assets/images/image-20260817181444666.png)
 
 - 悬浮歌词
 
-  ![image-20260817181753282](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260817181753282.png)
+  ![image-20260817181753282](/assets/images/image-20260817181753282.png)
 
 ### 手机端app使用指南
 
@@ -48,11 +48,11 @@ github地址
 
 下载该文件，安装
 
-  ![image-20260820205246628](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260820205246628.png)
+  ![image-20260820205246628](/assets/images/image-20260820205246628.png)
 
-![image-20260820205442136](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260820205442136.png)
+![image-20260820205442136](/assets/images/image-20260820205442136.png)
 
-![image-20260820205520528](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260820205520528.png)
+![image-20260820205520528](/assets/images/image-20260820205520528.png)
 
-![image-20260820205732218](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260820205732218.png)
+![image-20260820205732218](/assets/images/image-20260820205732218.png)
 

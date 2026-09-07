@@ -14,9 +14,9 @@ draft: false
 
 ---
 
-<img src="C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260903152220714.png" alt="image-20260903152220714" style="zoom: 67%;" />
+<img src="/assets/images/image-20260903152220714.png" alt="image-20260903152220714" style="zoom: 67%;" />
 
-<img src="C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260903152311246.png" alt="image-20260903152311246" style="zoom:50%;" />
+<img src="/assets/images/image-20260903152311246.png" alt="image-20260903152311246" style="zoom:50%;" />
 
 ## 0. 关键路径（先记下来，后面会反复用到）
 
