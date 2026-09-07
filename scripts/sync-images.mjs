@@ -74,7 +74,7 @@ if (touchedPosts.size) console.log(`  涉及文章: ${[...touchedPosts].join(', 
 else console.log(`  没有需要复制的新图片`);
 
 if (PUSH && !DRY_RUN) {
-  execSync(`git add public/assets/images scripts/sync-images.mjs package.json`, { cwd: ROOT, stdio: 'inherit' });
+  execSync(`git add public/assets/images scripts/sync-images.mjs package.json src/content/posts`, { cwd: ROOT, stdio: 'inherit' });
   try {
     execSync(`git diff --cached --quiet`, { cwd: ROOT, stdio: 'pipe' });
     console.log('\n没有需要提交的改动，跳过 push。');
