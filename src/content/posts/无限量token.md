@@ -4,7 +4,7 @@ date: 2026-09-03
 description: "汇总免费获取大模型 API token 的平台，实现 token 自由"
 categories: ["资源"]
 tags: ["token", "免费", "大模型"]
-draft: true
+draft: false
 ---
 
 ### 薅羊毛实现token自由(汇总)

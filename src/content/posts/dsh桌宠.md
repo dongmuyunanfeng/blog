@@ -4,7 +4,7 @@ date: 2026-09-03
 description: "C罗桌宠（dsh-ronaldo-pet）插件的安装、更新与故障排查手册"
 categories: ["dsh"]
 tags: ["桌宠", "插件", "dsh"]
-draft: true
+draft: false
 ---
 
 # C罗桌宠（dsh-ronaldo-pet）安装与维护手册

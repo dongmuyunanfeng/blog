@@ -4,7 +4,7 @@ date: 2026-09-03
 description: "通过 Tailscale 让手机远程访问电脑上的 DeepSeek Harness Web 界面"
 categories: ["dsh"]
 tags: ["远程连接", "Tailscale", "工具"]
-draft: true
+draft: false
 ---
 
 # DeepSeek Harness Web 手机远程连接指南（Tailscale）

@@ -4,10 +4,15 @@ date: 2026-09-03
 description: "自研听歌 app 使用指南：获取 MP3、桌面播放器与手机端安装"
 categories: ["项目"]
 tags: ["听歌", "app", "音乐"]
-draft: true
+draft: false
 ---
 
+### github地址：
+
+https://github.com/dongmuyunanfeng/Self-developed-music-APP-APK.git
+
 ###  获取MP3歌曲
+
 - 访问该网址
 
 https://music.apple.com/cn/search
@@ -28,8 +33,6 @@ https://aplmate.com/
 
 访问地址:
 
-github地址
-
 ![image-20260817181106115](/assets/images/image-20260817181106115.png)
 
 ![image-20260817181218562](/assets/images/image-20260817181218562.png)
@@ -43,8 +46,6 @@ github地址
 ### 手机端app使用指南
 
 访问地址:
-
-github地址
 
 下载该文件，安装
 

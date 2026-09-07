@@ -4,7 +4,7 @@ date: 2026-09-06
 description: "以留言板为例，从零到上线部署前后端项目：GitHub + Neon + Render + GitHub Actions"
 categories: ["教程"]
 tags: ["部署", "Render", "GitHub Actions"]
-draft: true
+draft: false
 ---
 
 # 留言板地址
