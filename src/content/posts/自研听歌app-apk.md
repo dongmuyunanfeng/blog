@@ -7,7 +7,11 @@ tags: ["听歌", "app", "音乐"]
 draft: false
 ---
 
+### github地址
+https://github.com/dongmuyunanfeng/Self-developed-music-APP-APK.git
+
 ###  获取MP3歌曲
+
 - 访问该网址
 
 https://music.apple.com/cn/search
@@ -26,10 +30,6 @@ https://aplmate.com/
 
 ### 桌面版播放器使用指南
 
-访问地址:
-
-github地址
-
 ![image-20260817181106115](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260817181106115.png)
 
 ![image-20260817181218562](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260817181218562.png)
@@ -41,10 +41,6 @@ github地址
   ![image-20260817181753282](C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260817181753282.png)
 
 ### 手机端app使用指南
-
-访问地址:
-
-github地址
 
 下载该文件，安装
 
