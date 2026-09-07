@@ -13,7 +13,7 @@ draft: false
 
 ---
 
-<img src="/assets/images/image-20260903150916375.png" alt="image-20260903150916375" style="zoom:33%;" />
+<img src="C:\Users\DongDong\AppData\Roaming\Typora\typora-user-images\image-20260903150916375.png" alt="image-20260903150916375" style="zoom:33%;" />
 
 ## 〇、整体原理（先看懂这张图）
 

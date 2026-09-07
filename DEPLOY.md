@@ -211,15 +211,27 @@ Giscus 通过文章的 URL 路径自动匹配 Discussion，格式是：`/posts/�
 
 ## 6. 发布文章
 
-### 本地方式
-1. 在 `blog/src/content/posts/` 创建新 `.md` 文件
-2. 参考 `_template.md` 格式编写 Front-matter
-3. 提交推送：
-   ```bash
-   git add src/content/posts/
-   git commit -m "Add: 文章标题"
-   git push
-   ```
+### 写文章
+直接在 `src/content/posts/` 下用 Typora 写新 `.md` 文件（可复制 `_template.md` 改 Front-matter）。
+文章里的图片用 Typora 正常插入即可（本地绝对路径 `C:\...` 或 `![alt](路径)` 都行），Typora 本地预览能正常显示，无需手动改成网站路径。
+
+### 同步图片并上传
+双击 `src/content/sync.bat`（或在项目根目录运行 `npm run sync`），脚本会：
+1. 扫描所有文章里的图片引用，把本地图片复制到 `public/assets/images/`；
+2. 提交（`sync: upload post images`）并推送到 GitHub。
+
+- `npm run sync`：拷图 + commit + push
+- `npm run sync:dry`：只预览会拷哪些图，不实际操作
+
+> 文章里的本地路径**不会被改动**，构建时由 `astro.config.mjs` 里的插件自动转成
+> `/assets/images/<文件名>`，所以 Typora 预览和网站都能正常显示图片。
+
+### 只更新文字（不拷图）
+```bash
+git add src/content/posts/
+git commit -m "Add: 文章标题"
+git push
+```
 
 ### Front-matter 格式
 ```yaml
@@ -232,7 +244,7 @@ description: 文章摘要描述
 draft: false
 ---
 ```
-- `draft: false` 才会显示在首页，`true` 仅本地可见
+- `draft: false` 才会显示在首页，`draft: true` 不会显示
 
 ---
 
@@ -242,6 +254,6 @@ draft: false
 - 评论数在 Giscus 配置后自动显示
 - 头像放置在 `public/assets/images/avatar.jpg`
 - 视频背景放置在 `public/assets/videos/banner.mp4`
-- 新增图片资源放入 `public/assets/images/`
+- 文章图片由 `sync.bat` / `npm run sync` 自动复制到 `public/assets/images/`，构建时自动把本地路径转成网站路径，无需手动管理
 - 每次推送 `main` 分支都会触发自动构建部署
 - GitHub Pages 域名：`https://YOUR_USERNAME.github.io/your-repo-name/`
